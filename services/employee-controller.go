@@ -25,7 +25,7 @@ func (s *service) CreateEmployee(input *models.Employee) (*models.Employee, erro
 	employee.Hire_date = input.Hire_date
 	employee.Job_id = input.Job_id
 	employee.Office_id = input.Office_id
-	employee.Photo = employee.Photo
+	employee.Photo = input.Photo
 	// res, err := repositories.Repository.Save(employee)
 	// if err != nil {
 	// 	return res, err

@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"hr-dms-api/controllers"
-	"hr-dms-api/repositories"
+	"hr-dms-api/employee"
+	"hr-dms-api/handler"
 	"log"
 
+	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -18,7 +19,15 @@ func main() {
 	}
 	fmt.Println("Conection to database is good")
 
-	Repository := repositories.NewRepository(db)
-	Controller := controllers.NewController(Repository)
+	router := gin.Default()
+	api := router.Group("/api/v1")
+
+	// employee
+	employeeRepository := employee.NewRepository(db)
+	employeeService := employee.NewService(employeeRepository)
+	employeeHandler := handler.NewEmployeeHandler(employeeService)
+	api.GET("/employees", employeeHandler.GetAllEmployees)
+
+	router.Run()
 
 }
