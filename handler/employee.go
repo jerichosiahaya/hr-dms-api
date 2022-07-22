@@ -4,6 +4,7 @@ package handler
 
 import (
 	"hr-dms-api/employee"
+	"hr-dms-api/helper"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,13 +21,32 @@ func NewEmployeeHandler(employeeService employee.Service) *EmployeeHandler {
 func (h *EmployeeHandler) GetAllEmployees(c *gin.Context) {
 	employees, err := h.employeeService.GetEmployees()
 	if err != nil {
-		errorMessage := gin.H{"errors": err.Error}
-		c.JSON(http.StatusNotFound, errorMessage)
+		// errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": err.Error()}
+		response := helper.APIResponse("failed to fetch the data", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
 	}
-	c.JSON(http.StatusOK, employees)
+	response := helper.APIResponse("successfully fetch the data", http.StatusOK, "success", employees)
+	c.JSON(http.StatusOK, response)
 }
 
 func (h *EmployeeHandler) CreateEmployee(c *gin.Context) {
-	test := gin.H{"m": "j"}
-	c.JSON(http.StatusOK, test)
+	var input employee.InputEmployee
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		// errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": err.Error()}
+		response := helper.APIResponse("register employee failed", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+	res, err := h.employeeService.CreateEmployee(input)
+	if err != nil {
+		response := helper.APIResponse("register employee failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	response := helper.APIResponse("employee registered successfully", http.StatusOK, "success", res)
+	c.JSON(http.StatusOK, response)
 }

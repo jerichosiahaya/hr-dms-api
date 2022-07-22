@@ -1,5 +1,7 @@
 package employee
 
+import "time"
+
 type Service interface {
 	CreateEmployee(input InputEmployee) (Employee, error)
 	GetEmployees() (Employees, error)
@@ -14,7 +16,7 @@ func NewService(repository Repository) *service {
 }
 
 func (s *service) CreateEmployee(input InputEmployee) (Employee, error) {
-	var employee Employee
+	employee := Employee{}
 	employee.First_name = input.First_name
 	employee.Last_name = input.Last_name
 	employee.Phone_number = input.Phone_number
@@ -30,10 +32,25 @@ func (s *service) CreateEmployee(input InputEmployee) (Employee, error) {
 }
 
 func (s *service) GetEmployees() (Employees, error) {
-	employee := Employees{}
-	employee, err := s.repository.Get()
+	tempEmployees := Employees{}
+	tempEmployees, err := s.repository.Get()
 	if err != nil {
-		return employee, err
+		return tempEmployees, err
 	}
-	return employee, nil
+	employees := Employees{}
+	tempEmployee := Employee{}
+	for _, s := range tempEmployees {
+		tempEmployee.First_name = s.First_name
+		tempEmployee.Last_name = s.Last_name
+		tempEmployee.Id = s.Id
+		tempEmployee.Photo = s.Photo
+		tempEmployee.Office_id = s.Office_id
+		tempEmployee.Job_id = s.Job_id
+		tempEmployee.Phone_number = s.Phone_number
+
+		newTime, _ := time.Parse("2006-01-02T00:00:00+09:00", s.Hire_date)
+		tempEmployee.Hire_date = newTime.Format("2006-01-02")
+		employees = append(employees, tempEmployee)
+	}
+	return employees, nil
 }

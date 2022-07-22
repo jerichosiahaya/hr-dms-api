@@ -27,6 +27,7 @@ func main() {
 	employeeService := employee.NewService(employeeRepository)
 	employeeHandler := handler.NewEmployeeHandler(employeeService)
 	api.GET("/employees", employeeHandler.GetAllEmployees)
+	api.POST("/employees", employeeHandler.CreateEmployee)
 
 	router.Run()
 
