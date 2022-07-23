@@ -1,10 +1,15 @@
 package employee
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type Service interface {
 	CreateEmployee(input InputEmployee) (Employee, error)
 	GetEmployees() (Employees, error)
+	GetEmployeeById(input GetEmployeeDetailById) (Employee, error)
+	DeleteEmployee(input GetEmployeeDetailById) (Employee, error)
 }
 
 type service struct {
@@ -53,4 +58,30 @@ func (s *service) GetEmployees() (Employees, error) {
 		employees = append(employees, tempEmployee)
 	}
 	return employees, nil
+}
+
+// get employee by id
+func (s *service) GetEmployeeById(input GetEmployeeDetailById) (Employee, error) {
+	res, err := s.repository.GetById(input.Id)
+	if err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
+func (s *service) DeleteEmployee(input GetEmployeeDetailById) (Employee, error) {
+	res, err := s.repository.GetById(input.Id)
+	if err != nil {
+		return res, err
+	}
+
+	if res.Id != input.Id {
+		return res, errors.New("owner validation failed")
+	}
+
+	deleteResponse, err := s.repository.Delete(res.Id)
+	if err != nil {
+		return deleteResponse, err
+	}
+	return deleteResponse, nil
 }

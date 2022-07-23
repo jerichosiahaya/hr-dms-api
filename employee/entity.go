@@ -22,3 +22,7 @@ type InputEmployee struct {
 	Job_id       int    `json:"job_id"`
 	Photo        string `json:"photo"`
 }
+
+type GetEmployeeDetailById struct {
+	Id int `uri:"id" binding:"required"`
+}

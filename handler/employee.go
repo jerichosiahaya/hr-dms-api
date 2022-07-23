@@ -50,3 +50,26 @@ func (h *EmployeeHandler) CreateEmployee(c *gin.Context) {
 	response := helper.APIResponse("employee registered successfully", http.StatusOK, "success", res)
 	c.JSON(http.StatusOK, response)
 }
+
+// delete employee by id
+func (h *EmployeeHandler) DeleteEmployee(c *gin.Context) {
+	var input employee.GetEmployeeDetailById
+
+	err := c.ShouldBindUri(&input)
+	if err != nil {
+		response := helper.APIResponse("failed to delete employee", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	res, err := h.employeeService.DeleteEmployee(input)
+	if err != nil {
+		response := helper.APIResponse("failed to delete employee", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("successfully deleted the employee", http.StatusOK, "success", res)
+	c.JSON(http.StatusOK, response)
+
+}

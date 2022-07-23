@@ -28,6 +28,7 @@ func main() {
 	employeeHandler := handler.NewEmployeeHandler(employeeService)
 	api.GET("/employees", employeeHandler.GetAllEmployees)
 	api.POST("/employees", employeeHandler.CreateEmployee)
+	api.DELETE("/employees/:id", employeeHandler.DeleteEmployee)
 
 	router.Run()
 
