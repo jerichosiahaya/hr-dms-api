@@ -8,6 +8,7 @@ type Repository interface {
 	Save(employee Employee) (Employee, error)
 	Get() (Employees, error)
 	GetById(Id int) (Employee, error)
+	// Delete(Id int)
 }
 
 type repository struct {
