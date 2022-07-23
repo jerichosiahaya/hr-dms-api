@@ -22,13 +22,14 @@ func main() {
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
-	// employee
+	// employee endpoint
 	employeeRepository := employee.NewRepository(db)
 	employeeService := employee.NewService(employeeRepository)
 	employeeHandler := handler.NewEmployeeHandler(employeeService)
 	api.GET("/employees", employeeHandler.GetAllEmployees)
 	api.POST("/employees", employeeHandler.CreateEmployee)
 	api.DELETE("/employees/:id", employeeHandler.DeleteEmployee)
+	api.PUT("/employees/:id", employeeHandler.UpdateEmployee)
 
 	router.Run()
 

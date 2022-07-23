@@ -73,3 +73,29 @@ func (h *EmployeeHandler) DeleteEmployee(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
+
+// update employee by id
+func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
+	var input employee.GetEmployeeDetailById
+	err := c.ShouldBindUri(&input)
+	if err != nil {
+		response := helper.APIResponse("failed to update employee", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	var inputEmployeeUpdate employee.InputEmployee
+	err = c.ShouldBindJSON(&inputEmployeeUpdate)
+	if err != nil {
+		response := helper.APIResponse("failed to update employee", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	res, err := h.employeeService.UpdateEmployee(input.Id, inputEmployeeUpdate)
+	if err != nil {
+		response := helper.APIResponse("failed to update employee", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	response := helper.APIResponse("successfully updated the employee", http.StatusOK, "success", res)
+	c.JSON(http.StatusOK, response)
+}

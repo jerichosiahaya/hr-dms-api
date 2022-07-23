@@ -10,6 +10,7 @@ type Service interface {
 	GetEmployees() (Employees, error)
 	GetEmployeeById(input GetEmployeeDetailById) (Employee, error)
 	DeleteEmployee(input GetEmployeeDetailById) (Employee, error)
+	UpdateEmployee(Id int, input InputEmployee) (Employee, error)
 }
 
 type service struct {
@@ -69,6 +70,7 @@ func (s *service) GetEmployeeById(input GetEmployeeDetailById) (Employee, error)
 	return res, nil
 }
 
+// delete employee by id
 func (s *service) DeleteEmployee(input GetEmployeeDetailById) (Employee, error) {
 	res, err := s.repository.GetById(input.Id)
 	if err != nil {
@@ -84,4 +86,30 @@ func (s *service) DeleteEmployee(input GetEmployeeDetailById) (Employee, error) 
 		return deleteResponse, err
 	}
 	return deleteResponse, nil
+}
+
+// update employee
+func (s *service) UpdateEmployee(Id int, input InputEmployee) (Employee, error) {
+	res, err := s.repository.GetById(Id)
+	if err != nil {
+		return res, err
+	}
+
+	if res.Id != Id {
+		return res, errors.New("owner validation failed")
+	}
+
+	res.First_name = input.First_name
+	res.Last_name = input.Last_name
+	res.Hire_date = input.Hire_date
+	res.Job_id = input.Job_id
+	res.Office_id = input.Office_id
+	res.Phone_number = input.Phone_number
+	res.Photo = input.Photo
+
+	updateResponse, err := s.repository.Update(res)
+	if err != nil {
+		return res, err
+	}
+	return updateResponse, nil
 }
