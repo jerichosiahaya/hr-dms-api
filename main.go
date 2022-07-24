@@ -5,6 +5,7 @@ import (
 	"hr-dms-api/employee"
 	"hr-dms-api/handler"
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -12,15 +13,27 @@ import (
 )
 
 func main() {
+	SetupServer()
+}
+
+func SetupServer() *gin.Engine {
+	router := gin.Default()
+	api := router.Group("/api/v1")
+	// server.Use(middlewares.CORSMiddleware())
+	// server.Use(sentrygin.New(sentrygin.Options{}))
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"serverTime": time.Now().UTC().Unix(),
+			"status":     "system is working fine",
+		})
+	})
+
 	dsn := "root:@tcp(localhost)/dimas_hrm_db?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	fmt.Println("Conection to database is good")
-
-	router := gin.Default()
-	api := router.Group("/api/v1")
+	fmt.Println("conection to database is good")
 
 	// employee endpoint
 	employeeRepository := employee.NewRepository(db)
@@ -33,4 +46,5 @@ func main() {
 
 	router.Run()
 
+	return router
 }

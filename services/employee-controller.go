@@ -30,5 +30,5 @@ func (s *service) CreateEmployee(input *models.Employee) (*models.Employee, erro
 	// if err != nil {
 	// 	return res, err
 	// }
-	// return res, nil
+	return employee, nil
 }
