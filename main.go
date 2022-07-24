@@ -40,6 +40,7 @@ func SetupServer() *gin.Engine {
 	employeeService := employee.NewService(employeeRepository)
 	employeeHandler := handler.NewEmployeeHandler(employeeService)
 	api.GET("/employees", employeeHandler.GetAllEmployees)
+	api.GET("/employees/:id", employeeHandler.GetOneEmployee)
 	api.POST("/employees", employeeHandler.CreateEmployee)
 	api.DELETE("/employees/:id", employeeHandler.DeleteEmployee)
 	api.PUT("/employees/:id", employeeHandler.UpdateEmployee)

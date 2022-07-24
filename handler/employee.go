@@ -71,7 +71,6 @@ func (h *EmployeeHandler) DeleteEmployee(c *gin.Context) {
 
 	response := helper.APIResponse("successfully deleted the employee", http.StatusOK, "success", res)
 	c.JSON(http.StatusOK, response)
-
 }
 
 // update employee by id
@@ -97,5 +96,23 @@ func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 		return
 	}
 	response := helper.APIResponse("successfully updated the employee", http.StatusOK, "success", res)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *EmployeeHandler) GetOneEmployee(c *gin.Context) {
+	var inputId employee.GetEmployeeDetailById
+	err := c.BindUri(&inputId)
+	if err != nil {
+		response := helper.APIResponse("failed to fetch employee", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	res, err := h.employeeService.GetEmployeeById(inputId)
+	if err != nil {
+		response := helper.APIResponse("failed to fetch employee", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	response := helper.APIResponse("successfully fetch the employee", http.StatusOK, "success", res)
 	c.JSON(http.StatusOK, response)
 }
